@@ -77,6 +77,11 @@ local function PutOnShoes()
     TriggerServerEvent('chilllixhub-zonsurau:server:updateShoeState', true, shoesData.drawable, shoesData.texture)
 end
 
+-- Check if stress decrease should continue
+local function IsStressDecreaseActive()
+    return stressDecreaseActive and inNoShoesZone
+end
+
 -- Check and manage player stress
 local function CheckAndManageStress()
     if not Config.StressManagement.enabled then return end
@@ -99,17 +104,17 @@ local function CheckAndManageStress()
         
         -- Create a thread to decrease stress over time
         stressThread = CreateThread(function()
-            while stressDecreaseActive and inNoShoesZone do
+            while IsStressDecreaseActive() do
                 Wait(Config.StressManagement.checkInterval)
                 
                 -- Check again if still in zone and active before processing
-                if not stressDecreaseActive or not inNoShoesZone then
+                if not IsStressDecreaseActive() then
                     break
                 end
                 
                 QBCore.Functions.TriggerCallback('chilllixhub-zonsurau:server:getPlayerStress', function(stress)
                     -- Final check: only update if still in zone and active
-                    if not stressDecreaseActive or not inNoShoesZone then
+                    if not IsStressDecreaseActive() then
                         return
                     end
                     

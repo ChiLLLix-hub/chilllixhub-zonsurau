@@ -1,6 +1,6 @@
 local QBCore = exports['qb-core']:GetCoreObject()
 local inNoShoesZone = false
-local hasShoes = true
+local hasOriginalShoes = true
 local shoesData = {}
 local stressDecreaseActive = false
 local stressThread = nil
@@ -14,13 +14,13 @@ local function StoreShoeData()
     }
 end
 
--- Remove shoes with animation
-local function RemoveShoes()
-    if not hasShoes then return end
+-- Change to special shoes (shoe #43) with animation
+local function ChangeToSpecialShoes()
+    if not hasOriginalShoes then return end
     
     local ped = PlayerPedId()
     
-    -- Store current shoes before removing
+    -- Store current shoes before changing
     StoreShoeData()
     
     -- Play animation
@@ -33,22 +33,22 @@ local function RemoveShoes()
     
     Wait(Config.Animation.duration)
     
-    -- Remove shoes
+    -- Change to special shoes (shoe #43)
     SetPedComponentVariation(ped, Config.ShoeComponents.componentId, Config.ShoeComponents.drawableId, Config.ShoeComponents.textureId, 0)
     
-    hasShoes = false
+    hasOriginalShoes = false
     
     if Config.ShowNotifications then
-        QBCore.Functions.Notify(Config.Messages.shoesRemoved, 'success')
+        QBCore.Functions.Notify(Config.Messages.shoesChanged, 'success')
     end
     
     -- Sync with server
     TriggerServerEvent('chilllixhub-zonsurau:server:updateShoeState', false, shoesData.drawable, shoesData.texture)
 end
 
--- Put shoes back on with animation
-local function PutOnShoes()
-    if hasShoes then return end
+-- Restore original shoes with animation
+local function RestoreOriginalShoes()
+    if hasOriginalShoes then return end
     
     local ped = PlayerPedId()
     
@@ -62,15 +62,15 @@ local function PutOnShoes()
     
     Wait(Config.Animation.duration)
     
-    -- Put shoes back on (restore original shoes)
+    -- Restore original shoes
     if shoesData.drawable ~= nil then
         SetPedComponentVariation(ped, Config.ShoeComponents.componentId, shoesData.drawable, shoesData.texture, 0)
     end
     
-    hasShoes = true
+    hasOriginalShoes = true
     
     if Config.ShowNotifications then
-        QBCore.Functions.Notify(Config.Messages.shoesPutOn, 'success')
+        QBCore.Functions.Notify(Config.Messages.shoesRestored, 'success')
     end
     
     -- Sync with server
@@ -180,7 +180,7 @@ CreateThread(function()
                 if Config.ShowNotifications then
                     QBCore.Functions.Notify(Config.Messages.enterZone, 'primary', 5000)
                 end
-                RemoveShoes()
+                ChangeToSpecialShoes()
                 
                 -- Check and manage stress when entering zone
                 CheckAndManageStress()
@@ -196,7 +196,7 @@ CreateThread(function()
                 if Config.ShowNotifications then
                     QBCore.Functions.Notify(Config.Messages.exitZone, 'primary', 5000)
                 end
-                PutOnShoes()
+                RestoreOriginalShoes()
             end
         end
     end)
@@ -205,18 +205,18 @@ end)
 -- Register /shoes command
 RegisterCommand(Config.Command, function()
     if inNoShoesZone then
-        -- Inside zone, can only remove shoes or they're already removed
-        if hasShoes then
-            RemoveShoes()
+        -- Inside zone, can only wear special shoes or they're already on
+        if hasOriginalShoes then
+            ChangeToSpecialShoes()
         else
-            QBCore.Functions.Notify('Your shoes are already off', 'error')
+            QBCore.Functions.Notify('You are already wearing the special shoes', 'error')
         end
     else
         -- Outside zone, can toggle shoes
-        if hasShoes then
-            RemoveShoes()
+        if hasOriginalShoes then
+            ChangeToSpecialShoes()
         else
-            PutOnShoes()
+            RestoreOriginalShoes()
         end
     end
 end, false)
@@ -242,18 +242,18 @@ RegisterCommand('stressminus', function(source, args)
 end, false)
 
 -- Sync shoe state from server to other players
-RegisterNetEvent('chilllixhub-zonsurau:client:syncShoeState', function(playerId, hasShoesOn, shoeDrawable, shoeTexture)
+RegisterNetEvent('chilllixhub-zonsurau:client:syncShoeState', function(playerId, hasOriginalShoesOn, shoeDrawable, shoeTexture)
     local playerIndex = GetPlayerFromServerId(playerId)
     
     if playerIndex >= 0 then
         local targetPed = GetPlayerPed(playerIndex)
         
         if targetPed and targetPed ~= PlayerPedId() then
-            if not hasShoesOn then
-                -- Remove shoes from target player
+            if not hasOriginalShoesOn then
+                -- Change to special shoes (shoe #43) on target player
                 SetPedComponentVariation(targetPed, Config.ShoeComponents.componentId, Config.ShoeComponents.drawableId, Config.ShoeComponents.textureId, 0)
             else
-                -- Put shoes back on target player (if we have their shoe data)
+                -- Restore original shoes on target player (if we have their shoe data)
                 if shoeDrawable ~= nil and shoeDrawable >= 0 then
                     SetPedComponentVariation(targetPed, Config.ShoeComponents.componentId, shoeDrawable, shoeTexture, 0)
                 end
@@ -265,7 +265,7 @@ end)
 -- Handle player spawning
 AddEventHandler('QBCore:Client:OnPlayerLoaded', function()
     StoreShoeData()
-    hasShoes = true
+    hasOriginalShoes = true
     inNoShoesZone = false
     StopStressDecrease()
 end)
@@ -274,7 +274,7 @@ end)
 AddEventHandler('onResourceStart', function(resourceName)
     if GetCurrentResourceName() == resourceName then
         StoreShoeData()
-        hasShoes = true
+        hasOriginalShoes = true
         inNoShoesZone = false
         StopStressDecrease()
     end

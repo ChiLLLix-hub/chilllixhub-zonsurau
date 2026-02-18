@@ -32,7 +32,10 @@ RegisterNetEvent('chilllixhub-zonsurau:server:updateStress', function(newStress)
     local src = source
     local Player = QBCore.Functions.GetPlayer(src)
     if Player then
-        Player.Functions.SetMetaData('stress', newStress)
+        -- Validate stress value to prevent exploits
+        if type(newStress) == 'number' and newStress >= 0 and newStress <= 100 then
+            Player.Functions.SetMetaData('stress', newStress)
+        end
     end
 end)
 

@@ -102,28 +102,26 @@ local function CheckAndManageStress()
             while stressDecreaseActive and inNoShoesZone do
                 Wait(Config.StressManagement.checkInterval)
                 
-                if stressDecreaseActive and inNoShoesZone then
-                    QBCore.Functions.TriggerCallback('chilllixhub-zonsurau:server:getPlayerStress', function(stress)
-                        if stress > 0 then
-                            local newStress = math.max(0, stress - Config.StressManagement.decreaseRate)
-                            TriggerServerEvent('chilllixhub-zonsurau:server:updateStress', newStress)
-                            
-                            if newStress == 0 then
-                                -- Stress reached 0, show notification and stop
-                                if Config.ShowNotifications then
-                                    QBCore.Functions.Notify(Config.StressManagement.messages.stressZero, 'success')
-                                end
-                                stressDecreaseActive = false
-                            end
-                        else
-                            -- Stress is already 0, stop decreasing
+                QBCore.Functions.TriggerCallback('chilllixhub-zonsurau:server:getPlayerStress', function(stress)
+                    if stress > 0 then
+                        local newStress = math.max(0, stress - Config.StressManagement.decreaseRate)
+                        TriggerServerEvent('chilllixhub-zonsurau:server:updateStress', newStress)
+                        
+                        if newStress == 0 then
+                            -- Stress reached 0, show notification and stop
                             if Config.ShowNotifications then
                                 QBCore.Functions.Notify(Config.StressManagement.messages.stressZero, 'success')
                             end
                             stressDecreaseActive = false
                         end
-                    end)
-                end
+                    else
+                        -- Stress is already 0, stop decreasing
+                        if Config.ShowNotifications then
+                            QBCore.Functions.Notify(Config.StressManagement.messages.stressZero, 'success')
+                        end
+                        stressDecreaseActive = false
+                    end
+                end)
             end
         end)
     end)
@@ -132,9 +130,6 @@ end
 -- Stop stress decrease
 local function StopStressDecrease()
     stressDecreaseActive = false
-    if stressThread then
-        stressThread = nil
-    end
 end
 
 -- Initialize PolyZone

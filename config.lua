@@ -5,30 +5,30 @@ Config.ZoneType = "box" -- Options: "box", "circle", "poly"
 
 -- Box Zone Configuration (if using box)
 Config.BoxZone = {
-    center = vector3(-260.0, -982.0, 31.0), -- Example coordinates for a Surau location
-    length = 20.0,
-    width = 20.0,
+    center = vector3(-1069.22, -1768.64, 3.37), -- Example coordinates for a Surau location
+    length = 20.5,
+    width = 20.5,
     options = {
         name = "no_shoes_zone",
-        heading = 0,
+        heading = 223.14,
         debugPoly = false, -- Set to true to visualize the zone
-        minZ = 30.0,
-        maxZ = 35.0
+        minZ = 1.5,
+        maxZ = 10.0,
     }
 }
 
--- Circle Zone Configuration (if using circle)
+--[[ Circle Zone Configuration (if using circle)
 Config.CircleZone = {
-    center = vector3(-260.0, -982.0, 31.0),
+    center = vector3(-1069.22, -1768.64, 3.37),
     radius = 15.0,
     options = {
         name = "no_shoes_zone",
-        debugPoly = false,
+        debugPoly = true,
         useZ = true
     }
-}
+}]]
 
--- Poly Zone Configuration (if using poly)
+--[[ Poly Zone Configuration (if using poly)
 Config.PolyZone = {
     points = {
         vector2(-270.0, -992.0),
@@ -40,9 +40,9 @@ Config.PolyZone = {
         name = "no_shoes_zone",
         minZ = 30.0,
         maxZ = 35.0,
-        debugPoly = false
+        debugPoly = true
     }
-}
+}]]
 
 -- Animation Configuration
 Config.Animation = {

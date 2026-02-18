@@ -35,6 +35,52 @@ RegisterNetEvent('chilllixhub-zonsurau:server:updateStress', function(newStress)
         -- Validate stress value to prevent exploits
         if type(newStress) == 'number' and newStress >= 0 and newStress <= 100 then
             Player.Functions.SetMetaData('stress', newStress)
+            -- Trigger qb-hud to update stress display with updated metadata
+            TriggerClientEvent('hud:client:UpdateNeeds', src, Player.PlayerData.job.name, Player.PlayerData.metadata)
+            -- Also trigger specific stress update for stress icon
+            TriggerClientEvent('hud:client:UpdateStress', src, newStress)
+        end
+    end
+end)
+
+-- Add stress level (testing command)
+RegisterNetEvent('chilllixhub-zonsurau:server:addStress', function(amount)
+    local src = source
+    local Player = QBCore.Functions.GetPlayer(src)
+    if Player then
+        if type(amount) == 'number' and amount > 0 then
+            local currentStress = Player.PlayerData.metadata['stress'] or 0
+            local newStress = math.min(100, currentStress + amount)
+            local actualChange = newStress - currentStress
+            Player.Functions.SetMetaData('stress', newStress)
+            -- Trigger qb-hud to update stress display with updated metadata
+            TriggerClientEvent('hud:client:UpdateNeeds', src, Player.PlayerData.job.name, Player.PlayerData.metadata)
+            -- Also trigger specific stress update for stress icon
+            TriggerClientEvent('hud:client:UpdateStress', src, newStress)
+            TriggerClientEvent('QBCore:Notify', src, 'Stress increased by ' .. actualChange .. ' (Current: ' .. newStress .. ')', 'success')
+        else
+            TriggerClientEvent('QBCore:Notify', src, 'Invalid amount. Must be a positive number.', 'error')
+        end
+    end
+end)
+
+-- Decrease stress level (testing command)
+RegisterNetEvent('chilllixhub-zonsurau:server:minusStress', function(amount)
+    local src = source
+    local Player = QBCore.Functions.GetPlayer(src)
+    if Player then
+        if type(amount) == 'number' and amount > 0 then
+            local currentStress = Player.PlayerData.metadata['stress'] or 0
+            local newStress = math.max(0, currentStress - amount)
+            local actualChange = currentStress - newStress
+            Player.Functions.SetMetaData('stress', newStress)
+            -- Trigger qb-hud to update stress display with updated metadata
+            TriggerClientEvent('hud:client:UpdateNeeds', src, Player.PlayerData.job.name, Player.PlayerData.metadata)
+            -- Also trigger specific stress update for stress icon
+            TriggerClientEvent('hud:client:UpdateStress', src, newStress)
+            TriggerClientEvent('QBCore:Notify', src, 'Stress decreased by ' .. actualChange .. ' (Current: ' .. newStress .. ')', 'success')
+        else
+            TriggerClientEvent('QBCore:Notify', src, 'Invalid amount. Must be a positive number.', 'error')
         end
     end
 end)

@@ -75,8 +75,8 @@ Config.Command = "shoes"
 -- Stress Management Configuration
 Config.StressManagement = {
     enabled = true, -- Enable/disable stress management feature
-    decreaseRate = 10, -- Amount of stress to decrease per minute
-    checkInterval = 60000, -- Check interval in milliseconds (60000 = 1 minute)
+    decreaseRate = 25, -- Amount of stress to decrease per check (25 points every 30 seconds = 100 to 0 in 2 minutes)
+    checkInterval = 30000, -- Check interval in milliseconds (30000 = 30 seconds, updates HUD every 30 seconds)
     messages = {
         stressZero = "Your stress level is 0",
         stressAlreadyZero = "Your stress level is already 0",

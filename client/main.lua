@@ -77,6 +77,11 @@ local function PutOnShoes()
     TriggerServerEvent('chilllixhub-zonsurau:server:updateShoeState', true, shoesData.drawable, shoesData.texture)
 end
 
+-- Check if stress decrease should continue
+local function IsStressDecreaseActive()
+    return stressDecreaseActive and inNoShoesZone
+end
+
 -- Check and manage player stress
 local function CheckAndManageStress()
     if not Config.StressManagement.enabled then return end
@@ -99,10 +104,20 @@ local function CheckAndManageStress()
         
         -- Create a thread to decrease stress over time
         stressThread = CreateThread(function()
-            while stressDecreaseActive and inNoShoesZone do
+            while IsStressDecreaseActive() do
                 Wait(Config.StressManagement.checkInterval)
                 
+                -- Check again if still in zone and active before processing
+                if not IsStressDecreaseActive() then
+                    break
+                end
+                
                 QBCore.Functions.TriggerCallback('chilllixhub-zonsurau:server:getPlayerStress', function(stress)
+                    -- Final check: only update if still in zone and active
+                    if not IsStressDecreaseActive() then
+                        return
+                    end
+                    
                     if stress > 0 then
                         local newStress = math.max(0, stress - Config.StressManagement.decreaseRate)
                         TriggerServerEvent('chilllixhub-zonsurau:server:updateStress', newStress)
@@ -204,6 +219,26 @@ RegisterCommand(Config.Command, function()
             PutOnShoes()
         end
     end
+end, false)
+
+-- Testing command to add stress
+RegisterCommand('stressadd', function(source, args)
+    local amount = tonumber(args[1])
+    if not amount or amount <= 0 then
+        QBCore.Functions.Notify('Usage: /stressadd [amount] (must be positive)', 'error')
+        return
+    end
+    TriggerServerEvent('chilllixhub-zonsurau:server:addStress', amount)
+end, false)
+
+-- Testing command to decrease stress
+RegisterCommand('stressminus', function(source, args)
+    local amount = tonumber(args[1])
+    if not amount or amount <= 0 then
+        QBCore.Functions.Notify('Usage: /stressminus [amount] (must be positive)', 'error')
+        return
+    end
+    TriggerServerEvent('chilllixhub-zonsurau:server:minusStress', amount)
 end, false)
 
 -- Sync shoe state from server to other players

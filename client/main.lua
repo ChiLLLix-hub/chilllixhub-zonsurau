@@ -102,7 +102,17 @@ local function CheckAndManageStress()
             while stressDecreaseActive and inNoShoesZone do
                 Wait(Config.StressManagement.checkInterval)
                 
+                -- Check again if still in zone and active before processing
+                if not stressDecreaseActive or not inNoShoesZone then
+                    break
+                end
+                
                 QBCore.Functions.TriggerCallback('chilllixhub-zonsurau:server:getPlayerStress', function(stress)
+                    -- Final check: only update if still in zone and active
+                    if not stressDecreaseActive or not inNoShoesZone then
+                        return
+                    end
+                    
                     if stress > 0 then
                         local newStress = math.max(0, stress - Config.StressManagement.decreaseRate)
                         TriggerServerEvent('chilllixhub-zonsurau:server:updateStress', newStress)

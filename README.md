@@ -110,8 +110,8 @@ Config.Messages = {
 ```lua
 Config.StressManagement = {
     enabled = true, -- Enable/disable stress management feature
-    decreaseRate = 10, -- Amount of stress to decrease per minute
-    checkInterval = 60000, -- Check interval in milliseconds (60000 = 1 minute)
+    decreaseRate = 25, -- Amount of stress to decrease per check (25 points every 30 seconds = 100 to 0 in 2 minutes)
+    checkInterval = 30000, -- Check interval in milliseconds (30000 = 30 seconds, updates HUD every 30 seconds)
     messages = {
         stressZero = "Your stress level is 0",
         stressAlreadyZero = "Your stress level is already 0",
@@ -122,7 +122,9 @@ Config.StressManagement = {
 
 **How Stress Management Works:**
 - When a player enters the zone, the script checks their current stress level
-- If stress is greater than 0, it automatically decreases by the configured rate per minute
+- If stress is greater than 0, it automatically decreases by the configured rate every check interval
+- With the default settings, stress reduces from 100 to 0 in 2 minutes (4 updates of 25 points each at 30-second intervals)
+- The HUD updates every 30 seconds to reflect the current stress level
 - Players receive a notification when their stress reaches 0
 - If a player enters with 0 stress, they are simply informed their stress is already at 0
 - Stress reduction stops when the player leaves the zone

@@ -14,6 +14,7 @@ This script creates a designated no-shoes zone where players must remove their s
 - Configurable zone coordinates and animation settings
 - QBCore framework integration
 - PolyZone integration for accurate zone detection
+- **Stress management system** - Automatically decreases player stress while in the zone
 
 ## Features
 
@@ -24,6 +25,7 @@ This script creates a designated no-shoes zone where players must remove their s
 - 📍 **Flexible Zone Types**: Choose between Box, Circle, or Polygon zones
 - ⚙️ **Fully Configurable**: Easy configuration through `config.lua`
 - 🔔 **Notifications**: Optional notifications for zone entry/exit
+- 🧘 **Stress Management**: Gradual stress reduction while in the peaceful zone
 
 ## Dependencies
 
@@ -104,6 +106,27 @@ Config.Messages = {
 }
 ```
 
+### Stress Management
+```lua
+Config.StressManagement = {
+    enabled = true, -- Enable/disable stress management feature
+    decreaseRate = 10, -- Amount of stress to decrease per minute
+    checkInterval = 60000, -- Check interval in milliseconds (60000 = 1 minute)
+    messages = {
+        stressZero = "Your stress level is 0",
+        stressAlreadyZero = "Your stress level is already 0",
+        stressDecreasing = "You feel relaxed in this peaceful area, your stress is decreasing"
+    }
+}
+```
+
+**How Stress Management Works:**
+- When a player enters the zone, the script checks their current stress level
+- If stress is greater than 0, it automatically decreases by the configured rate per minute
+- Players receive a notification when their stress reaches 0
+- If a player enters with 0 stress, they are simply informed their stress is already at 0
+- Stress reduction stops when the player leaves the zone
+
 ## Usage
 
 ### For Players
@@ -111,6 +134,7 @@ Config.Messages = {
 1. **Entering the Zone**: Walk into the no-shoes zone, and your shoes will automatically be removed with an animation
 2. **Exiting the Zone**: Walk out of the zone, and your shoes will automatically be put back on
 3. **Manual Toggle**: Type `/shoes` in chat to manually remove or put on shoes
+4. **Stress Relief**: Stay in the zone to gradually reduce your stress level. You'll receive notifications about your stress status
 
 ### For Server Administrators
 
@@ -162,6 +186,14 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Zone System**: [PolyZone](https://github.com/mkafrin/PolyZone)
 
 ## Changelog
+
+### Version 1.1.0
+- Added stress management system
+- Gradual stress reduction when in zone (configurable rate per minute)
+- Smart stress detection (checks on entry, informs if already at 0)
+- Automatic notification when stress reaches 0
+- Stress reduction stops when player exits zone
+- Fully configurable stress management settings
 
 ### Version 1.0.0
 - Initial release

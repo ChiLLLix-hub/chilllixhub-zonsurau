@@ -6,15 +6,15 @@ description 'No-Shoes Zone Script for Surau MLO using QBCore and PolyZone'
 version '1.0.0'
 
 shared_scripts {
+    'config.lua'
+}
+
+client_scripts {
     '@PolyZone/client.lua',
     '@PolyZone/BoxZone.lua',
     '@PolyZone/EntityZone.lua',
     '@PolyZone/CircleZone.lua',
     '@PolyZone/ComboZone.lua',
-    'config.lua'
-}
-
-client_scripts {
     'client/main.lua'
 }
 

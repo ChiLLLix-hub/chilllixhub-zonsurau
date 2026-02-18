@@ -41,7 +41,7 @@ local function RemoveShoes()
     end
     
     -- Sync with server
-    TriggerServerEvent('chilllixhub-zonsurau:server:updateShoeState', false, nil, nil)
+    TriggerServerEvent('chilllixhub-zonsurau:server:updateShoeState', false, shoesData.drawable, shoesData.texture)
 end
 
 -- Put shoes back on with animation
@@ -61,7 +61,7 @@ local function PutOnShoes()
     Wait(Config.Animation.duration)
     
     -- Put shoes back on (restore original shoes)
-    if shoesData.drawable then
+    if shoesData.drawable ~= nil then
         SetPedComponentVariation(ped, Config.ShoeComponents.componentId, shoesData.drawable, shoesData.texture, 0)
     end
     
@@ -144,16 +144,20 @@ end, false)
 
 -- Sync shoe state from server to other players
 RegisterNetEvent('chilllixhub-zonsurau:client:syncShoeState', function(playerId, hasShoesOn, shoeDrawable, shoeTexture)
-    local targetPed = GetPlayerPed(GetPlayerFromServerId(playerId))
+    local playerIndex = GetPlayerFromServerId(playerId)
     
-    if targetPed and targetPed ~= PlayerPedId() then
-        if not hasShoesOn then
-            -- Remove shoes from target player
-            SetPedComponentVariation(targetPed, Config.ShoeComponents.componentId, Config.ShoeComponents.drawableId, Config.ShoeComponents.textureId, 0)
-        else
-            -- Put shoes back on target player (if we have their shoe data)
-            if shoeDrawable and shoeDrawable ~= -1 then
-                SetPedComponentVariation(targetPed, Config.ShoeComponents.componentId, shoeDrawable, shoeTexture, 0)
+    if playerIndex >= 0 then
+        local targetPed = GetPlayerPed(playerIndex)
+        
+        if targetPed and targetPed ~= PlayerPedId() then
+            if not hasShoesOn then
+                -- Remove shoes from target player
+                SetPedComponentVariation(targetPed, Config.ShoeComponents.componentId, Config.ShoeComponents.drawableId, Config.ShoeComponents.textureId, 0)
+            else
+                -- Put shoes back on target player (if we have their shoe data)
+                if shoeDrawable ~= nil and shoeDrawable >= 0 then
+                    SetPedComponentVariation(targetPed, Config.ShoeComponents.componentId, shoeDrawable, shoeTexture, 0)
+                end
             end
         end
     end

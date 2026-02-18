@@ -23,13 +23,3 @@ AddEventHandler('playerDropped', function()
         playerShoeStates[src] = nil
     end
 end)
-
--- Register the /shoes command on the server
-QBCore.Commands.Add(Config.Command, 'Toggle shoes on/off', {}, false, function(source)
-    -- Command is handled on client side, but registered on server for consistency
-    TriggerClientEvent('chat:addMessage', source, {
-        color = {255, 255, 255},
-        multiline = true,
-        args = {"System", "Use /shoes to toggle your shoes"}
-    })
-end)

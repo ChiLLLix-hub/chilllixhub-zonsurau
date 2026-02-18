@@ -30,7 +30,7 @@ This script creates a designated no-shoes zone where players must remove their s
 This script requires the following resources:
 
 - [qb-core](https://github.com/qbcore-framework/qb-core) - QBCore Framework
-- [PolyZone](https://github.com/ChiLLLix-hub/PolyZone) - Zone creation and detection
+- [PolyZone](https://github.com/mkafrin/PolyZone) - Zone creation and detection
 
 ## Installation
 
@@ -159,7 +159,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - **Author**: ChiLLLix-hub
 - **Framework**: [QBCore Framework](https://github.com/qbcore-framework/qb-core)
-- **Zone System**: [PolyZone](https://github.com/ChiLLLix-hub/PolyZone)
+- **Zone System**: [PolyZone](https://github.com/mkafrin/PolyZone)
 
 ## Changelog
 

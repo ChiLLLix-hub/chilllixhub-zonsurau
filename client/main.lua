@@ -209,8 +209,8 @@ end, false)
 -- Testing command to add stress
 RegisterCommand('stressadd', function(source, args)
     local amount = tonumber(args[1])
-    if not amount then
-        QBCore.Functions.Notify('Usage: /stressadd [amount]', 'error')
+    if not amount or amount <= 0 then
+        QBCore.Functions.Notify('Usage: /stressadd [amount] (must be positive)', 'error')
         return
     end
     TriggerServerEvent('chilllixhub-zonsurau:server:addStress', amount)
@@ -219,8 +219,8 @@ end, false)
 -- Testing command to decrease stress
 RegisterCommand('stressminus', function(source, args)
     local amount = tonumber(args[1])
-    if not amount then
-        QBCore.Functions.Notify('Usage: /stressminus [amount]', 'error')
+    if not amount or amount <= 0 then
+        QBCore.Functions.Notify('Usage: /stressminus [amount] (must be positive)', 'error')
         return
     end
     TriggerServerEvent('chilllixhub-zonsurau:server:minusStress', amount)

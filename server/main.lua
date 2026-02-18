@@ -49,10 +49,11 @@ RegisterNetEvent('chilllixhub-zonsurau:server:addStress', function(amount)
         if type(amount) == 'number' and amount > 0 then
             local currentStress = Player.PlayerData.metadata['stress'] or 0
             local newStress = math.min(100, currentStress + amount)
+            local actualChange = newStress - currentStress
             Player.Functions.SetMetaData('stress', newStress)
             -- Trigger qb-hud to update stress display with updated metadata
             TriggerClientEvent('hud:client:UpdateNeeds', src, Player.PlayerData.job.name, Player.PlayerData.metadata)
-            TriggerClientEvent('QBCore:Notify', src, 'Stress increased by ' .. amount .. ' (Current: ' .. newStress .. ')', 'success')
+            TriggerClientEvent('QBCore:Notify', src, 'Stress increased by ' .. actualChange .. ' (Current: ' .. newStress .. ')', 'success')
         else
             TriggerClientEvent('QBCore:Notify', src, 'Invalid amount. Must be a positive number.', 'error')
         end
@@ -67,10 +68,11 @@ RegisterNetEvent('chilllixhub-zonsurau:server:minusStress', function(amount)
         if type(amount) == 'number' and amount > 0 then
             local currentStress = Player.PlayerData.metadata['stress'] or 0
             local newStress = math.max(0, currentStress - amount)
+            local actualChange = currentStress - newStress
             Player.Functions.SetMetaData('stress', newStress)
             -- Trigger qb-hud to update stress display with updated metadata
             TriggerClientEvent('hud:client:UpdateNeeds', src, Player.PlayerData.job.name, Player.PlayerData.metadata)
-            TriggerClientEvent('QBCore:Notify', src, 'Stress decreased by ' .. amount .. ' (Current: ' .. newStress .. ')', 'success')
+            TriggerClientEvent('QBCore:Notify', src, 'Stress decreased by ' .. actualChange .. ' (Current: ' .. newStress .. ')', 'success')
         else
             TriggerClientEvent('QBCore:Notify', src, 'Invalid amount. Must be a positive number.', 'error')
         end

@@ -206,6 +206,26 @@ RegisterCommand(Config.Command, function()
     end
 end, false)
 
+-- Testing command to add stress
+RegisterCommand('stressadd', function(source, args)
+    local amount = tonumber(args[1])
+    if not amount then
+        QBCore.Functions.Notify('Usage: /stressadd [amount]', 'error')
+        return
+    end
+    TriggerServerEvent('chilllixhub-zonsurau:server:addStress', amount)
+end, false)
+
+-- Testing command to decrease stress
+RegisterCommand('stressminus', function(source, args)
+    local amount = tonumber(args[1])
+    if not amount then
+        QBCore.Functions.Notify('Usage: /stressminus [amount]', 'error')
+        return
+    end
+    TriggerServerEvent('chilllixhub-zonsurau:server:minusStress', amount)
+end, false)
+
 -- Sync shoe state from server to other players
 RegisterNetEvent('chilllixhub-zonsurau:client:syncShoeState', function(playerId, hasShoesOn, shoeDrawable, shoeTexture)
     local playerIndex = GetPlayerFromServerId(playerId)

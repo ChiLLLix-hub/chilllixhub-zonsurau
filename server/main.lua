@@ -41,6 +41,42 @@ RegisterNetEvent('chilllixhub-zonsurau:server:updateStress', function(newStress)
     end
 end)
 
+-- Add stress level (testing command)
+RegisterNetEvent('chilllixhub-zonsurau:server:addStress', function(amount)
+    local src = source
+    local Player = QBCore.Functions.GetPlayer(src)
+    if Player then
+        if type(amount) == 'number' and amount > 0 then
+            local currentStress = Player.PlayerData.metadata['stress'] or 0
+            local newStress = math.min(100, currentStress + amount)
+            Player.Functions.SetMetaData('stress', newStress)
+            -- Trigger qb-hud to update stress display with updated metadata
+            TriggerClientEvent('hud:client:UpdateNeeds', src, Player.PlayerData.job.name, Player.PlayerData.metadata)
+            TriggerClientEvent('QBCore:Notify', src, 'Stress increased by ' .. amount .. ' (Current: ' .. newStress .. ')', 'success')
+        else
+            TriggerClientEvent('QBCore:Notify', src, 'Invalid amount. Must be a positive number.', 'error')
+        end
+    end
+end)
+
+-- Decrease stress level (testing command)
+RegisterNetEvent('chilllixhub-zonsurau:server:minusStress', function(amount)
+    local src = source
+    local Player = QBCore.Functions.GetPlayer(src)
+    if Player then
+        if type(amount) == 'number' and amount > 0 then
+            local currentStress = Player.PlayerData.metadata['stress'] or 0
+            local newStress = math.max(0, currentStress - amount)
+            Player.Functions.SetMetaData('stress', newStress)
+            -- Trigger qb-hud to update stress display with updated metadata
+            TriggerClientEvent('hud:client:UpdateNeeds', src, Player.PlayerData.job.name, Player.PlayerData.metadata)
+            TriggerClientEvent('QBCore:Notify', src, 'Stress decreased by ' .. amount .. ' (Current: ' .. newStress .. ')', 'success')
+        else
+            TriggerClientEvent('QBCore:Notify', src, 'Invalid amount. Must be a positive number.', 'error')
+        end
+    end
+end)
+
 -- Clean up disconnected players
 AddEventHandler('playerDropped', function()
     local src = source

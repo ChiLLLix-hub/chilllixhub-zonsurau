@@ -54,16 +54,16 @@ Config.Animation = {
 -- Shoe Configuration
 Config.ShoeComponents = {
     componentId = 6, -- Shoe component ID in GTA V
-    drawableId = -1, -- -1 means no shoes
+    drawableId = 43, -- Shoe #43 to wear in zone (changed from -1 which means no shoes)
     textureId = 0
 }
 
 -- Messages Configuration
 Config.Messages = {
-    enterZone = "Please remove your shoes in this area",
-    exitZone = "You can put your shoes back on",
-    shoesRemoved = "Shoes removed",
-    shoesPutOn = "Shoes put back on"
+    enterZone = "Welcome to the zone - special shoes equipped",
+    exitZone = "Leaving zone - your original shoes restored",
+    shoesChanged = "Special shoes equipped (Shoe #43)",
+    shoesRestored = "Your original shoes have been restored"
 }
 
 -- Display zone notification

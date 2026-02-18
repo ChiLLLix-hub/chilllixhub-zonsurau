@@ -1,14 +1,14 @@
 # chilllixhub-zonsurau
 
-FiveM script with QBCore framework for creating a no-shoes zone around Surau MLO using PolyZone integration.
+FiveM script with QBCore framework for creating a special shoe zone around Surau MLO using PolyZone integration.
 
 ## Description
 
-This script creates a designated no-shoes zone where players must remove their shoes when entering. The script features:
+This script creates a designated zone where players automatically wear special shoes (shoe #43) when entering. The script features:
 
-- Automatic shoe removal when entering the zone with animation
-- Automatic shoe restoration when exiting the zone
-- Manual `/shoes` command to toggle shoes
+- Automatic shoe change to shoe #43 when entering the zone with animation
+- Automatic restoration of original shoes when exiting the zone
+- Manual `/shoes` command to toggle between special and original shoes
 - Full player synchronization across all clients
 - Support for multiple zone types (Box, Circle, Poly)
 - Configurable zone coordinates and animation settings
@@ -18,10 +18,10 @@ This script creates a designated no-shoes zone where players must remove their s
 
 ## Features
 
-- 🔄 **Automatic Shoe Management**: Shoes are removed when entering and put back when exiting the zone
-- 🎭 **Realistic Animations**: Plays character animations when removing/putting on shoes
+- 🔄 **Automatic Shoe Management**: Special shoes (shoe #43) are equipped when entering and original shoes restored when exiting the zone
+- 🎭 **Realistic Animations**: Plays character animations when changing shoes
 - 👥 **Player Synchronization**: All players see shoe state changes in real-time
-- ⌨️ **Manual Control**: Use `/shoes` command to toggle shoes manually
+- ⌨️ **Manual Control**: Use `/shoes` command to toggle between special and original shoes manually
 - 📍 **Flexible Zone Types**: Choose between Box, Circle, or Polygon zones
 - ⚙️ **Fully Configurable**: Easy configuration through `config.lua`
 - 🔔 **Notifications**: Optional notifications for zone entry/exit
@@ -133,9 +133,9 @@ Config.StressManagement = {
 
 ### For Players
 
-1. **Entering the Zone**: Walk into the no-shoes zone, and your shoes will automatically be removed with an animation
-2. **Exiting the Zone**: Walk out of the zone, and your shoes will automatically be put back on
-3. **Manual Toggle**: Type `/shoes` in chat to manually remove or put on shoes
+1. **Entering the Zone**: Walk into the special zone, and you will automatically be equipped with special shoes (shoe #43) with an animation
+2. **Exiting the Zone**: Walk out of the zone, and your original shoes will automatically be restored
+3. **Manual Toggle**: Type `/shoes` in chat to manually switch between special and original shoes
 4. **Stress Relief**: Stay in the zone to gradually reduce your stress level. You'll receive notifications about your stress status
 
 ### For Server Administrators
@@ -155,11 +155,12 @@ To visualize the zone boundaries and help with setup:
 
 ## Troubleshooting
 
-### Shoes not being removed
+### Shoes not being changed
 - Verify PolyZone is installed and started before this resource
 - Check that zone coordinates match your Surau location
 - Enable debug mode to verify zone boundaries
 - Check F8 console for any errors
+- Ensure shoe #43 exists for the player's ped model
 
 ### Command not working
 - Ensure QBCore is properly installed and running
@@ -188,6 +189,13 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Zone System**: [PolyZone](https://github.com/mkafrin/PolyZone)
 
 ## Changelog
+
+### Version 1.2.0
+- Changed functionality from removing shoes to automatically equipping special shoes (shoe #43)
+- Original shoes are now properly stored and restored when exiting zone
+- Animation preserved during shoe changes
+- Updated messages to reflect new shoe-changing behavior
+- Manual `/shoes` command now toggles between special and original shoes
 
 ### Version 1.1.0
 - Added stress management system

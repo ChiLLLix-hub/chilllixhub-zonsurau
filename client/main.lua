@@ -2,6 +2,8 @@ local QBCore = exports['qb-core']:GetCoreObject()
 local inNoShoesZone = false
 local hasShoes = true
 local shoesData = {}
+local stressDecreaseActive = false
+local stressThread = nil
 
 -- Store original shoe data
 local function StoreShoeData()
@@ -75,6 +77,61 @@ local function PutOnShoes()
     TriggerServerEvent('chilllixhub-zonsurau:server:updateShoeState', true, shoesData.drawable, shoesData.texture)
 end
 
+-- Check and manage player stress
+local function CheckAndManageStress()
+    if not Config.StressManagement.enabled then return end
+    
+    QBCore.Functions.TriggerCallback('chilllixhub-zonsurau:server:getPlayerStress', function(currentStress)
+        if currentStress == 0 then
+            -- Player stress is already 0, just inform them
+            if Config.ShowNotifications then
+                QBCore.Functions.Notify(Config.StressManagement.messages.stressAlreadyZero, 'success')
+            end
+            return
+        end
+        
+        -- Player has stress, start decreasing it
+        if Config.ShowNotifications then
+            QBCore.Functions.Notify(Config.StressManagement.messages.stressDecreasing, 'primary')
+        end
+        
+        stressDecreaseActive = true
+        
+        -- Create a thread to decrease stress over time
+        stressThread = CreateThread(function()
+            while stressDecreaseActive and inNoShoesZone do
+                Wait(Config.StressManagement.checkInterval)
+                
+                QBCore.Functions.TriggerCallback('chilllixhub-zonsurau:server:getPlayerStress', function(stress)
+                    if stress > 0 then
+                        local newStress = math.max(0, stress - Config.StressManagement.decreaseRate)
+                        TriggerServerEvent('chilllixhub-zonsurau:server:updateStress', newStress)
+                        
+                        if newStress == 0 then
+                            -- Stress reached 0, show notification and stop
+                            if Config.ShowNotifications then
+                                QBCore.Functions.Notify(Config.StressManagement.messages.stressZero, 'success')
+                            end
+                            stressDecreaseActive = false
+                        end
+                    else
+                        -- Stress is already 0, stop decreasing
+                        if Config.ShowNotifications then
+                            QBCore.Functions.Notify(Config.StressManagement.messages.stressZero, 'success')
+                        end
+                        stressDecreaseActive = false
+                    end
+                end)
+            end
+        end)
+    end)
+end
+
+-- Stop stress decrease
+local function StopStressDecrease()
+    stressDecreaseActive = false
+end
+
 -- Initialize PolyZone
 CreateThread(function()
     local zone
@@ -109,11 +166,18 @@ CreateThread(function()
                     QBCore.Functions.Notify(Config.Messages.enterZone, 'primary', 5000)
                 end
                 RemoveShoes()
+                
+                -- Check and manage stress when entering zone
+                CheckAndManageStress()
             end
         else
             -- Player left the zone
             if inNoShoesZone then
                 inNoShoesZone = false
+                
+                -- Stop stress decrease when leaving zone
+                StopStressDecrease()
+                
                 if Config.ShowNotifications then
                     QBCore.Functions.Notify(Config.Messages.exitZone, 'primary', 5000)
                 end
@@ -168,6 +232,7 @@ AddEventHandler('QBCore:Client:OnPlayerLoaded', function()
     StoreShoeData()
     hasShoes = true
     inNoShoesZone = false
+    StopStressDecrease()
 end)
 
 -- Handle resource restart
@@ -176,5 +241,13 @@ AddEventHandler('onResourceStart', function(resourceName)
         StoreShoeData()
         hasShoes = true
         inNoShoesZone = false
+        StopStressDecrease()
+    end
+end)
+
+-- Handle resource stop to clean up stress threads
+AddEventHandler('onResourceStop', function(resourceName)
+    if GetCurrentResourceName() == resourceName then
+        StopStressDecrease()
     end
 end)

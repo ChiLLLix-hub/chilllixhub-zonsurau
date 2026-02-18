@@ -71,3 +71,15 @@ Config.ShowNotifications = true
 
 -- Command to manually toggle shoes
 Config.Command = "shoes"
+
+-- Stress Management Configuration
+Config.StressManagement = {
+    enabled = true, -- Enable/disable stress management feature
+    decreaseRate = 10, -- Amount of stress to decrease per minute
+    checkInterval = 60000, -- Check interval in milliseconds (60000 = 1 minute)
+    messages = {
+        stressZero = "Your stress level is 0",
+        stressAlreadyZero = "Your stress level is already 0",
+        stressDecreasing = "You feel relaxed in this peaceful area, your stress is decreasing"
+    }
+}

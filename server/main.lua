@@ -1,0 +1,31 @@
+local QBCore = exports['qb-core']:GetCoreObject()
+
+-- Track player shoe states
+local playerShoeStates = {}
+
+-- Handle shoe state updates from clients
+RegisterNetEvent('chilllixhub-zonsurau:server:updateShoeState', function(hasShoes)
+    local src = source
+    playerShoeStates[src] = hasShoes
+    
+    -- Sync to all other players
+    TriggerClientEvent('chilllixhub-zonsurau:client:syncShoeState', -1, src, hasShoes)
+end)
+
+-- Clean up disconnected players
+AddEventHandler('playerDropped', function()
+    local src = source
+    if playerShoeStates[src] then
+        playerShoeStates[src] = nil
+    end
+end)
+
+-- Register the /shoes command on the server
+QBCore.Commands.Add(Config.Command, 'Toggle shoes on/off', {}, false, function(source)
+    -- Command is handled on client side, but registered on server for consistency
+    TriggerClientEvent('chat:addMessage', source, {
+        color = {255, 255, 255},
+        multiline = true,
+        args = {"System", "Use /shoes to toggle your shoes"}
+    })
+end)

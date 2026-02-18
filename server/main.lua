@@ -35,7 +35,7 @@ RegisterNetEvent('chilllixhub-zonsurau:server:updateStress', function(newStress)
         -- Validate stress value to prevent exploits
         if type(newStress) == 'number' and newStress >= 0 and newStress <= 100 then
             Player.Functions.SetMetaData('stress', newStress)
-            -- Trigger qb-hud to update stress display
+            -- Trigger qb-hud to update stress display with updated metadata
             TriggerClientEvent('hud:client:UpdateNeeds', src, Player.PlayerData.job.name, Player.PlayerData.metadata)
         end
     end

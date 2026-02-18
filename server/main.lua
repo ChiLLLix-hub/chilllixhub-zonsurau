@@ -37,6 +37,8 @@ RegisterNetEvent('chilllixhub-zonsurau:server:updateStress', function(newStress)
             Player.Functions.SetMetaData('stress', newStress)
             -- Trigger qb-hud to update stress display with updated metadata
             TriggerClientEvent('hud:client:UpdateNeeds', src, Player.PlayerData.job.name, Player.PlayerData.metadata)
+            -- Also trigger specific stress update for stress icon
+            TriggerClientEvent('hud:client:UpdateStress', src, newStress)
         end
     end
 end)
@@ -53,6 +55,8 @@ RegisterNetEvent('chilllixhub-zonsurau:server:addStress', function(amount)
             Player.Functions.SetMetaData('stress', newStress)
             -- Trigger qb-hud to update stress display with updated metadata
             TriggerClientEvent('hud:client:UpdateNeeds', src, Player.PlayerData.job.name, Player.PlayerData.metadata)
+            -- Also trigger specific stress update for stress icon
+            TriggerClientEvent('hud:client:UpdateStress', src, newStress)
             TriggerClientEvent('QBCore:Notify', src, 'Stress increased by ' .. actualChange .. ' (Current: ' .. newStress .. ')', 'success')
         else
             TriggerClientEvent('QBCore:Notify', src, 'Invalid amount. Must be a positive number.', 'error')
@@ -72,6 +76,8 @@ RegisterNetEvent('chilllixhub-zonsurau:server:minusStress', function(amount)
             Player.Functions.SetMetaData('stress', newStress)
             -- Trigger qb-hud to update stress display with updated metadata
             TriggerClientEvent('hud:client:UpdateNeeds', src, Player.PlayerData.job.name, Player.PlayerData.metadata)
+            -- Also trigger specific stress update for stress icon
+            TriggerClientEvent('hud:client:UpdateStress', src, newStress)
             TriggerClientEvent('QBCore:Notify', src, 'Stress decreased by ' .. actualChange .. ' (Current: ' .. newStress .. ')', 'success')
         else
             TriggerClientEvent('QBCore:Notify', src, 'Invalid amount. Must be a positive number.', 'error')

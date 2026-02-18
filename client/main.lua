@@ -41,7 +41,7 @@ local function RemoveShoes()
     end
     
     -- Sync with server
-    TriggerServerEvent('chilllixhub-zonsurau:server:updateShoeState', false)
+    TriggerServerEvent('chilllixhub-zonsurau:server:updateShoeState', false, nil, nil)
 end
 
 -- Put shoes back on with animation
@@ -72,7 +72,7 @@ local function PutOnShoes()
     end
     
     -- Sync with server
-    TriggerServerEvent('chilllixhub-zonsurau:server:updateShoeState', true)
+    TriggerServerEvent('chilllixhub-zonsurau:server:updateShoeState', true, shoesData.drawable, shoesData.texture)
 end
 
 -- Initialize PolyZone
@@ -143,12 +143,18 @@ RegisterCommand(Config.Command, function()
 end, false)
 
 -- Sync shoe state from server to other players
-RegisterNetEvent('chilllixhub-zonsurau:client:syncShoeState', function(playerId, hasShoes)
+RegisterNetEvent('chilllixhub-zonsurau:client:syncShoeState', function(playerId, hasShoesOn, shoeDrawable, shoeTexture)
     local targetPed = GetPlayerPed(GetPlayerFromServerId(playerId))
     
     if targetPed and targetPed ~= PlayerPedId() then
-        if not hasShoes then
+        if not hasShoesOn then
+            -- Remove shoes from target player
             SetPedComponentVariation(targetPed, Config.ShoeComponents.componentId, Config.ShoeComponents.drawableId, Config.ShoeComponents.textureId, 0)
+        else
+            -- Put shoes back on target player (if we have their shoe data)
+            if shoeDrawable and shoeDrawable ~= -1 then
+                SetPedComponentVariation(targetPed, Config.ShoeComponents.componentId, shoeDrawable, shoeTexture, 0)
+            end
         end
     end
 end)

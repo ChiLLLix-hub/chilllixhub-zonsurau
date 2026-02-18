@@ -4,12 +4,16 @@ local QBCore = exports['qb-core']:GetCoreObject()
 local playerShoeStates = {}
 
 -- Handle shoe state updates from clients
-RegisterNetEvent('chilllixhub-zonsurau:server:updateShoeState', function(hasShoes)
+RegisterNetEvent('chilllixhub-zonsurau:server:updateShoeState', function(hasShoes, shoeDrawable, shoeTexture)
     local src = source
-    playerShoeStates[src] = hasShoes
+    playerShoeStates[src] = {
+        hasShoes = hasShoes,
+        drawable = shoeDrawable,
+        texture = shoeTexture
+    }
     
     -- Sync to all other players
-    TriggerClientEvent('chilllixhub-zonsurau:client:syncShoeState', -1, src, hasShoes)
+    TriggerClientEvent('chilllixhub-zonsurau:client:syncShoeState', -1, src, hasShoes, shoeDrawable, shoeTexture)
 end)
 
 -- Clean up disconnected players
